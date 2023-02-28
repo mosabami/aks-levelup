@@ -1,0 +1,31 @@
+# ssh-keygen -t rsa
+# ssh-keygen -t rsa -C "kan.ck.chen@outlook.com" -f "id_rsa_kanckoutlook_GH"
+# ssh-add ~/.ssh/id_rsa_ilikems_GH
+# ~/config
+
+#  git clone git@github.com:iloveck/repo_name.git
+#  git clone git@github.com-ilikems:ilikems/repo_name.git
+#  git clone git@github.com-kanckoutlook:ghaccountname/repo_name.git
+
+# 1. GitHub - iloveck kan.ck.chen@gmail.com
+Host github.com-iloveck
+   HostName github.com
+   User git
+   IdentityFile ~/.ssh/id_rsa_iloveck_GH
+# 2. Gitub - ilikems chenkan@microsoft.com
+Host github.com-ilikems
+   HostName github.comm
+   User git
+   IdentityFile ~/.ssh/id_rsa_ilikems_GH
+# 3. Gitub - kan.ck.chen@outlook.com
+Host github.com-kanckoutlook
+   HostName github.com
+   User git
+   IdentityFile ~/.ssh/id_rsa_kanckoutlook_GH
+# 4. ADO - chenkan@microsfot.com
+Host dev.azure.com
+   HostName dev.azure.com
+   User git
+   IdentityFile ~/.ssh/id_rsa_MS0216_kan
+
+
