@@ -4,13 +4,24 @@ This training module will introduce you to basic concepts of how Istio utilizes 
 
 ## Before you begin
 
-Please follow this walkthrough step by step. The creation of a new AKS cluster and installing the Azure Service Mesh addon new is needed for scenarios and configuration highlights in later tasks. Having an existing AKS cluster and/or deployment of the AKS Azure Service Mesh addon my alter some desired results of this specific walkthrough.
+Please follow this walkthrough step-by-step. The creation of a new AKS cluster and installing the Azure Service Mesh addon new is needed for scenarios and configuration highlighted in later tasks. Having an existing AKS cluster and/or deployment of the AKS Azure Service Mesh addon my alter some desired results of this specific walkthrough.
 
 ### Clone the Istio Upstream GitHub repo
 
 ```
 git clone https://github.com/istio/istio.git
 ```
+
+### Add istioctl to your path
+
+```bash
+cd Istio/bin
+sudo install -o root -g root -m 0755 ./istioctl /usr/local/bin/istioctl
+```
+
+### Download OpenSSL
+
+Go to the openssl GitHub repo and download the latest release https://github.com/openssl/openssl
 
 ### Setup environment variables
 
@@ -68,7 +79,7 @@ az provider register --namespace Microsoft.ContainerService
 ```bash
 az group create --name ${RESOURCE_GROUP} --location ${LOCATION}
 
-az aks create -g ${CLUSTER_NAME} -n ${RESOURCE_GROUP} --node-vm-size standard_d2_v2 --node-count 3 --enable-managed-identity -o none
+az aks create -g ${CLUSTER_NAME} -n ${RESOURCE_GROUP} --node-vm-size standard_d2_v2 --node-count 3 --enable-managed-identity --enable-asm -o none
 ```
 
 ### Verify successful installation
@@ -107,6 +118,8 @@ istiod-asm-1-17-cdb49b9bd-ttlbq   1/1     Running   0          18h
 
 ![Alt text](./images/arch-sec.svg "Istio's Security Architecture")
 
+**_NOTE:_** If you would like to venture deep into the understandings of the istio agent and how it interacts with the control plan for certificate services, you can view the istio-agent security architecture https://github.com/istio/istio/blob/master/architecture/security/istio-agent.md.
+
 ## View the Certificates Used for Mesh mTLS Encryption
 
 View the secrets residing in the `aks-istio-system` namespace.
@@ -122,7 +135,7 @@ sh.helm.release.v1.azure-service-mesh-istio-discovery.v498   helm.sh/release.v1 
 sh.helm.release.v1.azure-service-mesh-istio-discovery.v499   helm.sh/release.v1   1      39s
 ```
 
-We can see the CA keys used for the mesh is contained in the `istio-ca-secret` secret. If we desribe the secret we can see the files container the certificate and signing key.
+We can see the CA keys used for the mesh is contained in the `istio-ca-secret` secret. If we desribe the secret we can see the files contain the certificate and signing key.
 
 ```bash
 kubectl describe secret -n aks-istio-system istio-ca-secret
@@ -316,9 +329,9 @@ httpbin-6f844bf9bd-lv2j2   1/1     Running   0          10m
 sleep-754d65bfd6-k8t5w     1/1     Running   0          13m
 ```
 
-We will now lable the `foo` namespace to be managed by Azure Service Mesh.
+We will now label the `foo` namespace to be managed by Azure Service Mesh.
 
-**_NOTE:_** Labeling the namespace uses a rev of the version of Istio to manage the particular namespace. This is done to distinquish namespaces that are managed by different versions of Istio. This will be discussed in upcoming upgrade documentation for the addon.
+**_NOTE:_** Labeling the namespace uses a rev meaning the revision and/or the version of Istio to manage the particular namespace. This is done to distinquish namespaces that are managed by different versions of Istio. This will be discussed in upcoming upgrade documentation for the addon.
 
 ```bash
 kubectl label namespace foo istio.io/rev=asm-1-17
@@ -447,7 +460,7 @@ Notice the additional headers added by the istio-proxy (Envoy) sidecar.
 }
 ```
 
-For distributed tracking, using either Jaeger, Zipkin, etc, Istio integrates using Envoy-based tracing using B3 headers and Envoy-generated request IDs.
+For distributed tracing, using either Jaeger, Zipkin, etc, Istio integrates using Envoy-based tracing using B3 headers and Envoy-generated request IDs.
 
 To see the certificate chain of each workload deployment, you can output the secret data containing the TLS certificates.
 
