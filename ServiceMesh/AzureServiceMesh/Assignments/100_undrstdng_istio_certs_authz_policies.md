@@ -439,7 +439,7 @@ kubectl exec -it -n foo deploy/sleep -c sleep -- curl -sS http://httpbin.foo:800
 Now let's take a look at the response from `httpbin` headers endpoint.
 
 ```bash
-kubectl exec -it -n foo deploy/sleep -c sleep -- curl -sS http://httpbin.foo:8000/headersheaders
+kubectl exec -it -n foo deploy/sleep -c sleep -- curl -sS http://httpbin.foo:8000/headers
 ```
 
 Notice the additional headers added by the istio-proxy (Envoy) sidecar.
